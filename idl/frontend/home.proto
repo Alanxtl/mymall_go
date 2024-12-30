@@ -1,4 +1,3 @@
-// idl/hello/hello.proto
 syntax = "proto3";
 
 package frontend.home;
@@ -6,11 +5,10 @@ package frontend.home;
 option go_package = "frontend/home";
 
 import "api.proto";
-
-message Empty {}
+import "frontend/common.proto";
 
 service HomeService {
-  rpc Home(Empty) returns(Empty) {
+  rpc Home(common.Empty) returns(common.Empty) {
     option (api.get) = "/";
   }
 }

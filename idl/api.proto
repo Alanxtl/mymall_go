@@ -1,4 +1,3 @@
-// idl/api.proto; Annotation extension
 syntax = "proto3";
 
 package api;
