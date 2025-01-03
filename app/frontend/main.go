@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"github.com/Alanxtl/mymall_go/app/frontend/middleware"
 	"github.com/hertz-contrib/sessions"
 	"github.com/hertz-contrib/sessions/redis"
 	"github.com/joho/godotenv"
@@ -11,7 +12,9 @@ import (
 	"time"
 
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/router"
+	myutils "github.com/Alanxtl/mymall_go/app/frontend/biz/utils"
 	"github.com/Alanxtl/mymall_go/app/frontend/conf"
+
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -41,12 +44,31 @@ func main() {
 		ctx.JSON(consts.StatusOK, utils.H{"ping": "pong"})
 	})
 
-	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
-		ctx.HTML(consts.StatusOK, "sign-in", utils.H{"Title": "Sign In"})
+	h.GET("/about", middleware.Auth(), func(c context.Context, ctx *app.RequestContext) {
+		ctx.HTML(consts.StatusOK, "about", utils.H{
+			"title": "About",
+		})
 	})
 
-	h.GET("/sign-up", func(c context.Context, ctx *app.RequestContext) {
-		ctx.HTML(consts.StatusOK, "sign-up", utils.H{"Title": "Sign Up"})
+	h.GET("/sign-in", middleware.AuthLogin(), func(c context.Context, ctx *app.RequestContext) {
+		resp := myutils.WarpResponse(c, ctx, utils.H{
+			"title": "Sign In",
+			"from":  ctx.Request.Header.Get("Referer"),
+		})
+
+		if ctx.Query("from") != "" {
+			resp["from"] = ctx.Query("from")
+		}
+
+		ctx.HTML(consts.StatusOK, "sign-in", resp)
+	})
+
+	h.GET("/sign-up", middleware.AuthLogin(), func(c context.Context, ctx *app.RequestContext) {
+		resp := myutils.WarpResponse(c, ctx, utils.H{
+			"title": "Sign Up",
+			"from":  ctx.Query("from"),
+		})
+		ctx.HTML(consts.StatusOK, "sign-up", resp)
 	})
 
 	router.GeneratedRegister(h)
@@ -100,4 +122,6 @@ func registerMiddleware(h *server.Hertz) {
 
 	// cores
 	h.Use(cors.Default())
+
+	middleware.Register(h)
 }

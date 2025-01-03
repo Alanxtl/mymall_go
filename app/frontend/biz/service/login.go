@@ -5,7 +5,6 @@ import (
 	"github.com/hertz-contrib/sessions"
 
 	auth "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/auth"
-	common "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/common"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -18,7 +17,7 @@ func NewLoginService(Context context.Context, RequestContext *app.RequestContext
 	return &LoginService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *LoginService) Run(req *auth.LoginReq) (resp *common.Empty, err error) {
+func (h *LoginService) Run(req *auth.LoginReq) (resp string, err error) {
 	//defer func() {
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
@@ -28,10 +27,11 @@ func (h *LoginService) Run(req *auth.LoginReq) (resp *common.Empty, err error) {
 	session := sessions.Default(h.RequestContext)
 
 	session.Set("user_id", 1)
+	session.Set("user_name", req.Email)
 	err = session.Save()
 	if err != nil {
-		return nil, err
+		return req.From, err
 	}
 
-	return
+	return req.From, nil
 }

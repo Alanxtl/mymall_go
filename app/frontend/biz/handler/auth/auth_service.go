@@ -2,10 +2,10 @@ package auth
 
 import (
 	"context"
-
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/service"
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/utils"
 	auth "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/auth"
+	common "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/common"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -22,14 +22,13 @@ func Login(ctx context.Context, c *app.RequestContext) {
 	}
 
 	//resp := &common.Empty{}
-	_, err = service.NewLoginService(ctx, c).Run(&req)
+	resp, err := service.NewLoginService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	c.Redirect(consts.StatusOK, []byte("/"))
-
+	c.Redirect(consts.StatusOK, []byte(resp))
 	//utils.SendSuccessResponse(ctx, c, consts.StatusOK, "done!")
 }
 
@@ -44,7 +43,29 @@ func Register(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	_, err = service.NewRegisterService(ctx, c).Run(&req)
+	resp, err := service.NewRegisterService(ctx, c).Run(&req)
+
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	c.Redirect(consts.StatusOK, []byte(resp))
+	//utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+}
+
+// Logout .
+// @router /auth/logout [POST]
+func Logout(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req common.Empty
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	_, err = service.NewLogoutService(ctx, c).Run(&req)
 
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)

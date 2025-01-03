@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"github.com/Alanxtl/mymall_go/app/frontend/middleware"
 	"github.com/hertz-contrib/sessions"
 
 	"github.com/cloudwego/hertz/pkg/app"
@@ -21,7 +22,13 @@ func SendSuccessResponse(ctx context.Context, c *app.RequestContext, code int, d
 
 func WarpResponse(ctx context.Context, c *app.RequestContext, context map[string]any) map[string]any {
 	session := sessions.Default(c)
-	context["user_id"] = session.Get("user_id")
+
+	if context == nil {
+		context = make(map[string]any)
+	}
+
+	context["user_id"] = ctx.Value(middleware.SessionUserId)
+	context["user_name"] = session.Get("user_name")
 
 	return context
 }

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{$.title}} | Shop</title>
+    <title>{{ .title}} | Shop</title>
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
   </head>
@@ -21,7 +21,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -33,7 +33,7 @@
                 </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link">About</a>
+                <a class="nav-link" href="/about">About</a>
               </li>
             </ul>
             <form class="d-flex" role="search">
@@ -47,24 +47,20 @@
 
 
             {{if .user_id}}
-            <div class="ms-3">
-              <i class="fa-solid fa-user fa-xl"></i>
-            </div>
-
             <div class="btn-group">
-
-              <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-
-              </button>
+              <div class="ms-3 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-user fa-xl"></i>
+                <span>{{ .user_name}}</span>
+              </div>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li><button class="dropdown-item" type="button" href="/sign-out">Logout</button></li>
+                <li><button type="submit" class="dropdown-item">Order Center</button></li>
+                <li><form method="post" action="/auth/logout"><button type="submit" class="dropdown-item">Logout</button></form></li>
               </ul>
             </div>
             <div class="dropdown">
-
             {{else}}
             <div class="ms-3">
-              <a type="button" class="btn btn-primary" href="/sign-in">Sign in</a>
+              <a type="button" class="btn btn-primary" href="/sign-in?from={{ .from}}">Sign in</a>
             </div>
             {{end}}
 
