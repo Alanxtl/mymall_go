@@ -28,7 +28,11 @@ func Home(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp = utils.WarpResponse(ctx, c, resp)
+	resp, err = utils.WarpResponse(ctx, c, resp)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
 
 	c.HTML(consts.StatusOK, "home", resp)
 

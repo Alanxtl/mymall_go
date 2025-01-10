@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"github.com/Alanxtl/mymall_go/app/frontend/infra/rpc"
 	"github.com/Alanxtl/mymall_go/app/frontend/middleware"
 	"github.com/hertz-contrib/sessions"
 	"github.com/hertz-contrib/sessions/redis"
@@ -34,6 +35,7 @@ func main() {
 	_ = godotenv.Load()
 	// init dal
 	// dal.Init()
+	rpc.Init()
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
 
@@ -44,30 +46,45 @@ func main() {
 		ctx.JSON(consts.StatusOK, utils.H{"ping": "pong"})
 	})
 
-	h.GET("/about", middleware.Auth(), func(c context.Context, ctx *app.RequestContext) {
+	h.GET("/about", func(c context.Context, ctx *app.RequestContext) {
 		ctx.HTML(consts.StatusOK, "about", utils.H{
 			"title": "About",
 		})
 	})
 
 	h.GET("/sign-in", middleware.AuthLogin(), func(c context.Context, ctx *app.RequestContext) {
-		resp := myutils.WarpResponse(c, ctx, utils.H{
+		resp, err := myutils.WarpResponse(c, ctx, utils.H{
 			"title": "Sign In",
-			"from":  ctx.Request.Header.Get("Referer"),
 		})
+		if err != nil {
+			myutils.SendErrResponse(c, ctx, consts.StatusOK, err)
+			return
+		}
 
-		if ctx.Query("from") != "" {
-			resp["from"] = ctx.Query("from")
+		resp, err = myutils.QueryFrom(c, ctx, resp)
+		if err != nil {
+			myutils.SendErrResponse(c, ctx, consts.StatusOK, err)
+			return
 		}
 
 		ctx.HTML(consts.StatusOK, "sign-in", resp)
 	})
 
 	h.GET("/sign-up", middleware.AuthLogin(), func(c context.Context, ctx *app.RequestContext) {
-		resp := myutils.WarpResponse(c, ctx, utils.H{
+		resp, err := myutils.WarpResponse(c, ctx, utils.H{
 			"title": "Sign Up",
-			"from":  ctx.Query("from"),
 		})
+		if err != nil {
+			myutils.SendErrResponse(c, ctx, consts.StatusOK, err)
+			return
+		}
+
+		resp, err = myutils.QueryFrom(c, ctx, resp)
+		if err != nil {
+			myutils.SendErrResponse(c, ctx, consts.StatusOK, err)
+			return
+		}
+
 		ctx.HTML(consts.StatusOK, "sign-up", resp)
 	})
 

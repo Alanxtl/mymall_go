@@ -9,7 +9,7 @@ services:
     ports:
       - 3306:3306
     environment:
-      - MYSQL_DATABASE=frontend
+      - MYSQL_DATABASE=user
       - MYSQL_ROOT_PASSWORD=root
   redis:
     image: 'redis:latest'
