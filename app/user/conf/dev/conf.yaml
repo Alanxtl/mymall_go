@@ -1,6 +1,6 @@
 kitex:
   service: "user"
-  address: "172.22.142.171:8888"
+  address: "192.168.18.9:8888"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10

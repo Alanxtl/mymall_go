@@ -12,6 +12,6 @@ services:
       - MYSQL_DATABASE=user
       - MYSQL_ROOT_PASSWORD=root
   redis:
-    image: 'redis:latest'
+    image: 'redis:alpine3.21'
     ports:
       - 6379:6379
