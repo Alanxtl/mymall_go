@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/Alanxtl/mymall_go/app/cart/biz/dal/mysql"
+	"github.com/Alanxtl/mymall_go/app/cart/biz/model"
 	cart "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
+	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
 type EmptyCartService struct {
@@ -15,6 +18,10 @@ func NewEmptyCartService(ctx context.Context) *EmptyCartService {
 // Run create note info
 func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp, err error) {
 	// Finish your business logic.
+	err := model.EmptyCart(s.ctx, mysql.DB, req.UserId)
+	if err != nil {
+		return nil, kerrors.NewBizStatusError(50001, err.Error())
+	}
 
-	return
+	return &cart.EmptyCartResp{}, nil
 }

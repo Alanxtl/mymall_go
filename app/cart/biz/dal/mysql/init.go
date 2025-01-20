@@ -1,7 +1,10 @@
 package mysql
 
 import (
+	"fmt"
+	"github.com/Alanxtl/mymall_go/app/cart/biz/model"
 	"github.com/Alanxtl/mymall_go/app/cart/conf"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,7 +16,8 @@ var (
 )
 
 func Init() {
-	DB, err = gorm.Open(mysql.Open(conf.GetConf().MySQL.DSN),
+	dsn := fmt.Sprintf(conf.GetConf().MySQL.DSN, os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"), os.Getenv("MYSQL_HOST"))
+	DB, err = gorm.Open(mysql.Open(dsn),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,
@@ -21,5 +25,14 @@ func Init() {
 	)
 	if err != nil {
 		panic(err)
+	}
+	if os.Getenv("GO_ENV") != "online" {
+		_ = !DB.Migrator().HasTable(&model.Cart{})
+		err := DB.AutoMigrate(
+			&model.Cart{},
+		)
+		if err != nil {
+			return
+		}
 	}
 }

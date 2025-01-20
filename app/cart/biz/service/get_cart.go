@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/Alanxtl/mymall_go/app/cart/biz/dal/mysql"
+	"github.com/Alanxtl/mymall_go/app/cart/biz/model"
 	cart "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
+	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
 type GetCartService struct {
@@ -15,6 +18,19 @@ func NewGetCartService(ctx context.Context) *GetCartService {
 // Run create note info
 func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err error) {
 	// Finish your business logic.
+	list, err := model.GetCartByUserId(s.ctx, mysql.DB, req.UserId)
+	if err != nil {
+		return nil, kerrors.NewBizStatusError(50002, err.Error())
+	}
 
-	return
+	var items []*cart.CartItem
+
+	for _, item := range list {
+		items = append(items, &cart.CartItem{
+			ProductId: item.ProductId,
+			Quantity:  item.Quantity,
+		})
+	}
+
+	return &cart.GetCartResp{Items: items}, nil
 }

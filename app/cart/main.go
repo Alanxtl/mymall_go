@@ -1,6 +1,10 @@
 package main
 
 import (
+	"github.com/Alanxtl/mymall_go/app/cart/biz/dal"
+	"github.com/Alanxtl/mymall_go/app/cart/rpc"
+	"github.com/joho/godotenv"
+	consul "github.com/kitex-contrib/registry-consul"
 	"net"
 	"time"
 
@@ -15,6 +19,9 @@ import (
 )
 
 func main() {
+	_ = godotenv.Load(".env")
+	dal.Init()
+	rpc.Init()
 	opts := kitexInit()
 
 	svr := cartservice.NewServer(new(CartServiceImpl), opts...)
@@ -32,6 +39,14 @@ func kitexInit() (opts []server.Option) {
 		panic(err)
 	}
 	opts = append(opts, server.WithServiceAddr(addr))
+
+	//consul
+	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
+	if err != nil {
+		panic(err)
+	}
+
+	opts = append(opts, server.WithRegistry(r))
 
 	// service info
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{

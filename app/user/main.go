@@ -51,8 +51,9 @@ func kitexInit() (opts []server.Option) {
 	//consul
 	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
-		klog.Fatal(err)
+		panic(err)
 	}
+
 	opts = append(opts, server.WithRegistry(r))
 
 	// klog
