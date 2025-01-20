@@ -1,3 +1,5 @@
+app/*/tmp/main
+
 app/*/.env
 *.o
 *.a
