@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/Alanxtl/mymall_go/app/cart/biz/dal"
-	"github.com/Alanxtl/mymall_go/app/cart/rpc"
+	"github.com/Alanxtl/mymall_go/app/cart/infra/rpc"
 	"github.com/joho/godotenv"
 	consul "github.com/kitex-contrib/registry-consul"
 	"net"
@@ -45,7 +45,6 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-
 	opts = append(opts, server.WithRegistry(r))
 
 	// service info

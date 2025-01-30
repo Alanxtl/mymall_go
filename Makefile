@@ -6,6 +6,8 @@ gen-frontend:
 	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/auth_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
 	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/category_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
 	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/product_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
+	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/cart_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
+	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/checkout_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
 
 .PHONY: gen-user
 gen-user:
@@ -21,3 +23,13 @@ gen-product:
 gen-cart:
 	@cd rpc_gen && cwgo client --type RPC --idl ../idl/cart.proto --service ${ROOT_MOD}/cart --module ${ROOT_MOD}/rpc_gen -I ../idl
 	@cd app/cart && cwgo server --type RPC --idl ../../idl/cart.proto --service cart --module ${ROOT_MOD}/app/cart -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"
+
+.PHONY: gen-payment
+gen-payment:
+	@cd rpc_gen && cwgo client --type RPC --idl ../idl/payment.proto --service ${ROOT_MOD}/payment --module ${ROOT_MOD}/rpc_gen -I ../idl
+	@cd app/payment && cwgo server --type RPC --idl ../../idl/payment.proto --service payment --module ${ROOT_MOD}/app/payment -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"
+
+.PHONY: gen-checkout
+gen-checkout:
+	@cd rpc_gen && cwgo client --type RPC --idl ../idl/checkout.proto --service ${ROOT_MOD}/checkout --module ${ROOT_MOD}/rpc_gen -I ../idl
+	@cd app/checkout && cwgo server --type RPC --idl ../../idl/checkout.proto --service checkout --module ${ROOT_MOD}/app/checkout -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"

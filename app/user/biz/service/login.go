@@ -31,7 +31,7 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	}
 
 	resp = &user.LoginResp{
-		UserId: int32(userGet.ID),
+		UserId: uint32(userGet.ID),
 	}
 
 	return resp, nil

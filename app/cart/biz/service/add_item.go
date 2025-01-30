@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/Alanxtl/mymall_go/app/cart/biz/dal/mysql"
 	"github.com/Alanxtl/mymall_go/app/cart/biz/model"
-	"github.com/Alanxtl/mymall_go/app/cart/rpc"
+	"github.com/Alanxtl/mymall_go/app/cart/infra/rpc"
 	cart "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
@@ -19,12 +19,15 @@ func NewAddItemService(ctx context.Context) *AddItemService {
 
 // Run create note info
 func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err error) {
+	if req.Item == nil {
+		return nil, kerrors.NewBizStatusError(40001, "item is nil")
+	}
 	productResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: req.Item.ProductId})
 	if err != nil {
 		return nil, err
 	}
 
-	if productResp == nil || productResp.Products.Id == 0 {
+	if productResp == nil || productResp.Product.Id == 0 {
 		return nil, kerrors.NewBizStatusError(40004, "product not found")
 	}
 

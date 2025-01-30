@@ -2,7 +2,8 @@ package rpc
 
 import (
 	"github.com/Alanxtl/mymall_go/app/frontend/conf"
-	"github.com/Alanxtl/mymall_go/app/frontend/utils"
+	frontendUtils "github.com/Alanxtl/mymall_go/app/frontend/utils"
+	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/user/userservice"
 	client "github.com/cloudwego/kitex/client"
@@ -13,6 +14,7 @@ import (
 var (
 	UserClient    userservice.Client
 	ProductClient productcatalogservice.Client
+	CartClient    cartservice.Client
 
 	once sync.Once
 )
@@ -21,26 +23,38 @@ func Init() {
 	once.Do(func() {
 		initUserClient()
 		initProductClient()
+		initCartClient()
 	})
 }
 
 func initUserClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
-	utils.MustHandleError(err)
+	frontendUtils.MustHandleError(err)
 	opts = append(opts, client.WithResolver(r))
 
 	UserClient, err = userservice.NewClient("user", opts...)
-	utils.MustHandleError(err)
+	frontendUtils.MustHandleError(err)
 }
 
 func initProductClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
-	utils.MustHandleError(err)
+	frontendUtils.MustHandleError(err)
 	opts = append(opts, client.WithResolver(r))
 
 	ProductClient, err = productcatalogservice.NewClient("product", opts...)
-	utils.MustHandleError(err)
+	frontendUtils.MustHandleError(err)
+
+}
+
+func initCartClient() {
+	var opts []client.Option
+	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
+	frontendUtils.MustHandleError(err)
+	opts = append(opts, client.WithResolver(r))
+
+	CartClient, err = cartservice.NewClient("cart", opts...)
+	frontendUtils.MustHandleError(err)
 
 }

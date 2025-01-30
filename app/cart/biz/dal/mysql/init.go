@@ -23,6 +23,8 @@ func Init() {
 			SkipDefaultTransaction: true,
 		},
 	)
+	err := DB.AutoMigrate(&model.Cart{})
+
 	if err != nil {
 		panic(err)
 	}

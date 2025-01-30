@@ -35,7 +35,7 @@ message GetProductReq {
 }
 
 message GetProductResp {
-  Product products = 1;
+  Product product = 1;
 }
 
 message SearchProductsReq {

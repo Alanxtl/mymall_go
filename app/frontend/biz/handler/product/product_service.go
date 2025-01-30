@@ -5,6 +5,7 @@ import (
 
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/service"
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/utils"
+	common "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/common"
 	product "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/product"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -24,6 +25,11 @@ func GetProduct(ctx context.Context, c *app.RequestContext) {
 	resp, err := service.NewGetProductService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	resp, err = utils.WarpResponse(ctx, c, resp)
+	if err != nil {
 		return
 	}
 

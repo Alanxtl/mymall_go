@@ -218,7 +218,7 @@ func (x *GetProductResp) fastReadField1(buf []byte, _type int8) (offset int, err
 	if err != nil {
 		return offset, err
 	}
-	x.Products = &v
+	x.Product = &v
 	return offset, nil
 }
 
@@ -417,10 +417,10 @@ func (x *GetProductResp) FastWrite(buf []byte) (offset int) {
 }
 
 func (x *GetProductResp) fastWriteField1(buf []byte) (offset int) {
-	if x.Products == nil {
+	if x.Product == nil {
 		return offset
 	}
-	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetProducts())
+	offset += fastpb.WriteMessage(buf[offset:], 1, x.GetProduct())
 	return offset
 }
 
@@ -598,10 +598,10 @@ func (x *GetProductResp) Size() (n int) {
 }
 
 func (x *GetProductResp) sizeField1() (n int) {
-	if x.Products == nil {
+	if x.Product == nil {
 		return n
 	}
-	n += fastpb.SizeMessage(1, x.GetProducts())
+	n += fastpb.SizeMessage(1, x.GetProduct())
 	return n
 }
 
@@ -663,7 +663,7 @@ var fieldIDToName_GetProductReq = map[int32]string{
 }
 
 var fieldIDToName_GetProductResp = map[int32]string{
-	1: "Products",
+	1: "Product",
 }
 
 var fieldIDToName_SearchProductsReq = map[int32]string{

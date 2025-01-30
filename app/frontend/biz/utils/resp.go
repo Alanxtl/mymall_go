@@ -2,7 +2,9 @@ package utils
 
 import (
 	"context"
-	"github.com/Alanxtl/mymall_go/app/frontend/utils"
+	"github.com/Alanxtl/mymall_go/app/frontend/infra/rpc"
+	frontendUtils "github.com/Alanxtl/mymall_go/app/frontend/utils"
+	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 )
@@ -27,12 +29,23 @@ func WarpResponse(ctx context.Context, c *app.RequestContext, context map[string
 
 	session := sessions.Default(c)
 
-	fromCtx, err := utils.GetUserIdFromCtx(ctx)
+	fromCtx, err := frontendUtils.GetUserIdFromCtx(ctx)
 	if err != nil {
 		return context, err
 	}
 	context["user_id"] = fromCtx
 	context["user_name"] = session.Get("user_name")
+
+	if fromCtx > 0 {
+		cartResp, err := rpc.CartClient.GetCart(ctx, &cart.GetCartReq{
+			UserId: fromCtx,
+		})
+		if err != nil {
+			return nil, err
+		}
+		context["cart_num"] = len(cartResp.Items)
+	}
+
 
 	return context, nil
 }
