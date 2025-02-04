@@ -4,6 +4,7 @@ package cart
 
 import (
 	fmt "fmt"
+	common "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/common"
 	fastpb "github.com/cloudwego/fastpb"
 )
 
@@ -11,41 +12,6 @@ var (
 	_ = fmt.Errorf
 	_ = fastpb.Skip
 )
-
-func (x *CartItem) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
-	switch number {
-	case 1:
-		offset, err = x.fastReadField1(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 2:
-		offset, err = x.fastReadField2(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	default:
-		offset, err = fastpb.Skip(buf, _type, number)
-		if err != nil {
-			goto SkipFieldError
-		}
-	}
-	return offset, nil
-SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_CartItem[number], err)
-}
-
-func (x *CartItem) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.ProductId, offset, err = fastpb.ReadUint32(buf, _type)
-	return offset, err
-}
-
-func (x *CartItem) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	x.Quantity, offset, err = fastpb.ReadUint32(buf, _type)
-	return offset, err
-}
 
 func (x *AddItemReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
@@ -78,7 +44,7 @@ func (x *AddItemReq) fastReadField1(buf []byte, _type int8) (offset int, err err
 }
 
 func (x *AddItemReq) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v CartItem
+	var v common.ProductItem
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -146,7 +112,7 @@ ReadFieldError:
 }
 
 func (x *GetCartResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	var v CartItem
+	var v common.ProductItem
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
@@ -191,31 +157,6 @@ func (x *EmptyCartResp) FastRead(buf []byte, _type int8, number int32) (offset i
 	return offset, nil
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-}
-
-func (x *CartItem) FastWrite(buf []byte) (offset int) {
-	if x == nil {
-		return offset
-	}
-	offset += x.fastWriteField1(buf[offset:])
-	offset += x.fastWriteField2(buf[offset:])
-	return offset
-}
-
-func (x *CartItem) fastWriteField1(buf []byte) (offset int) {
-	if x.ProductId == 0 {
-		return offset
-	}
-	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetProductId())
-	return offset
-}
-
-func (x *CartItem) fastWriteField2(buf []byte) (offset int) {
-	if x.Quantity == 0 {
-		return offset
-	}
-	offset += fastpb.WriteUint32(buf[offset:], 2, x.GetQuantity())
-	return offset
 }
 
 func (x *AddItemReq) FastWrite(buf []byte) (offset int) {
@@ -307,31 +248,6 @@ func (x *EmptyCartResp) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *CartItem) Size() (n int) {
-	if x == nil {
-		return n
-	}
-	n += x.sizeField1()
-	n += x.sizeField2()
-	return n
-}
-
-func (x *CartItem) sizeField1() (n int) {
-	if x.ProductId == 0 {
-		return n
-	}
-	n += fastpb.SizeUint32(1, x.GetProductId())
-	return n
-}
-
-func (x *CartItem) sizeField2() (n int) {
-	if x.Quantity == 0 {
-		return n
-	}
-	n += fastpb.SizeUint32(2, x.GetQuantity())
-	return n
-}
-
 func (x *AddItemReq) Size() (n int) {
 	if x == nil {
 		return n
@@ -421,11 +337,6 @@ func (x *EmptyCartResp) Size() (n int) {
 	return n
 }
 
-var fieldIDToName_CartItem = map[int32]string{
-	1: "ProductId",
-	2: "Quantity",
-}
-
 var fieldIDToName_AddItemReq = map[int32]string{
 	1: "UserId",
 	2: "Item",
@@ -446,3 +357,5 @@ var fieldIDToName_EmptyCartReq = map[int32]string{
 }
 
 var fieldIDToName_EmptyCartResp = map[int32]string{}
+
+var _ = common.File_common_proto

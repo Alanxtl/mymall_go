@@ -33,3 +33,8 @@ gen-payment:
 gen-checkout:
 	@cd rpc_gen && cwgo client --type RPC --idl ../idl/checkout.proto --service ${ROOT_MOD}/checkout --module ${ROOT_MOD}/rpc_gen -I ../idl
 	@cd app/checkout && cwgo server --type RPC --idl ../../idl/checkout.proto --service checkout --module ${ROOT_MOD}/app/checkout -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"
+
+.PHONY: gen-order
+gen-order:
+	@cd rpc_gen && cwgo client --type RPC --idl ../idl/order.proto --service ${ROOT_MOD}/order --module ${ROOT_MOD}/rpc_gen -I ../idl
+	@cd app/order && cwgo server --type RPC --idl ../../idl/order.proto --service order --module ${ROOT_MOD}/app/order -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"

@@ -4,14 +4,11 @@ package cart;
 
 option go_package = "/cart";
 
-message CartItem {
-   uint32 product_id = 1;
-   uint32 quantity = 2;
-}
+import "common.proto";
 
 message AddItemReq {
    uint32 user_id = 1;
-   CartItem item = 2;
+   common.ProductItem item = 2;
 }
 
 message AddItemResp {}
@@ -21,7 +18,7 @@ message GetCartReq {
 }
 
 message GetCartResp {
-   repeated CartItem items = 1;
+   repeated common.ProductItem items = 1;
 }
 
 message EmptyCartReq {

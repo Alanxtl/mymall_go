@@ -9,7 +9,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"strconv"
 
-	common "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/common"
+	"github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/common"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 

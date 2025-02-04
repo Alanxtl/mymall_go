@@ -5,21 +5,14 @@ package checkout;
 option go_package = "/checkout";
 
 import "payment.proto";
-
-message Address {
-   string street = 1;
-   string city = 2;
-   string state = 3;
-   string country = 4;
-   string zip = 5;
-}
+import "common.proto";
 
 message CheckoutReq {
    uint32 user_id = 1;
    string firstname = 2;
    string lastname = 3;
    string email = 4;
-   Address address = 5;
+   common.Address address = 5;
    payment.CreditCardInfo credit_card = 6;
 }
 

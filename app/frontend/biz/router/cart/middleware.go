@@ -3,12 +3,13 @@
 package cart
 
 import (
+	"github.com/Alanxtl/mymall_go/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
 func rootMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	return []app.HandlerFunc{middleware.Auth()}
 }
 
 func _getcartMw() []app.HandlerFunc {

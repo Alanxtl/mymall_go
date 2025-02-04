@@ -5,6 +5,7 @@ import (
 	"github.com/Alanxtl/mymall_go/app/cart/biz/dal/mysql"
 	"github.com/Alanxtl/mymall_go/app/cart/biz/model"
 	cart "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
+	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/common"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
@@ -23,10 +24,10 @@ func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err 
 		return nil, kerrors.NewBizStatusError(50002, err.Error())
 	}
 
-	var items []*cart.CartItem
+	var items []*common.ProductItem
 
 	for _, item := range list {
-		items = append(items, &cart.CartItem{
+		items = append(items, &common.ProductItem{
 			ProductId: item.ProductId,
 			Quantity:  item.Quantity,
 		})

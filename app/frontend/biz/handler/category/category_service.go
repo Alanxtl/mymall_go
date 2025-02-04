@@ -6,7 +6,6 @@ import (
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/service"
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/utils"
 	category "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/category"
-	common "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/common"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )

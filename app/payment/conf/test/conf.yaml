@@ -1,5 +1,5 @@
 kitex:
-  service: "cart"
+  service: "payment"
   address: "172.22.142.171:8891"
   log_level: info
   log_file_name: "log/kitex.log"

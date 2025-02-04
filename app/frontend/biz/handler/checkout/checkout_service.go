@@ -2,7 +2,6 @@ package checkout
 
 import (
 	"context"
-
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/service"
 	"github.com/Alanxtl/mymall_go/app/frontend/biz/utils"
 	checkout "github.com/Alanxtl/mymall_go/app/frontend/hertz_gen/frontend/checkout"
@@ -22,14 +21,21 @@ func Checkout(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := &common.Empty{}
-	resp, err = service.NewCheckoutService(ctx, c).Run(&req)
+	resp, err := service.NewCheckoutService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+	resp, err = utils.WarpResponse(ctx, c, resp)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	c.HTML(consts.StatusOK, "checkout", resp)
+
+	//utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // CheckoutWaiting .
@@ -43,14 +49,21 @@ func CheckoutWaiting(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := &common.Empty{}
-	resp, err = service.NewCheckoutWaitingService(ctx, c).Run(&req)
+	resp, err := service.NewCheckoutWaitingService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+	resp, err = utils.WarpResponse(ctx, c, resp)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	c.HTML(consts.StatusOK, "waiting", resp)
+
+	//utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 
 // CheckoutResult .
@@ -64,12 +77,19 @@ func CheckoutResult(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := &common.Empty{}
-	resp, err = service.NewCheckoutResultService(ctx, c).Run(&req)
+	resp, err := service.NewCheckoutResultService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
+	resp, err = utils.WarpResponse(ctx, c, resp)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	c.HTML(consts.StatusOK, "result", resp)
+
+	//utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }

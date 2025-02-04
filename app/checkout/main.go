@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Alanxtl/mymall_go/app/checkout/infra/rpc"
 	consul "github.com/kitex-contrib/registry-consul"
 	"net"
 	"time"
@@ -17,6 +18,7 @@ import (
 
 func main() {
 	opts := kitexInit()
+	rpc.Init()
 
 	svr := checkoutservice.NewServer(new(CheckoutServiceImpl), opts...)
 

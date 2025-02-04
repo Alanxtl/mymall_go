@@ -1,6 +1,6 @@
 kitex:
-  service: "checkout"
-  address: "172.22.142.171:8892"
+  service: "order"
+  address: "172.22.142.171:8893"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
@@ -15,7 +15,7 @@ registry:
 
 mysql:
   #  dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
-  dsn: "%s:%s@tcp(%s:3306)/checkout?gorm=utf8mb4&parseTime=True&loc=Local"
+  dsn: "%s:%s@tcp(%s:3306)/order?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
   address: "127.0.0.1:6379"
