@@ -5,11 +5,12 @@ import (
 	"github.com/Alanxtl/mymall_go/app/checkout/infra/rpc"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/checkout"
+	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/common"
+	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/order"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/payment"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/google/uuid"
 )
 
 type CheckoutService struct {
@@ -31,23 +32,47 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 		return nil, kerrors.NewGRPCBizStatusError(5004001, "cart is empty")
 	}
 
-	var total float32
+	var (
+		total      float32
+		orderItems []*order.OrderItem
+		orderId    string
+	)
 
 	for _, item := range cartResp.Items {
-		cartResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: item.ProductId})
+		getProductResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: item.ProductId})
 		if err != nil {
 			return nil, err
 		}
-		if cartResp == nil || cartResp.Product == nil {
+		if getProductResp == nil || getProductResp.Product == nil {
 			continue
 		}
-		total += cartResp.Product.Price * float32(item.Quantity)
+
+		p := getProductResp.Product
+		cost := p.Price * float32(item.Quantity)
+		total += cost
+
+		orderItems = append(orderItems, &order.OrderItem{
+			Item: &common.ProductItem{
+				ProductId: p.Id,
+				Quantity:  item.Quantity,
+			},
+			Cost: cost,
+		})
 	}
 
-	var orderId string
-
-	u, _ := uuid.NewRandom()
-	orderId = u.String()
+	placeOrderResp, err := rpc.OrderClient.PlaceOrder(s.ctx, &order.PlaceOrderReq{
+		UserId:       req.UserId,
+		UserCurrency: "USD",
+		Address:      req.Address,
+		Email:        req.Email,
+		Items:        orderItems,
+	})
+	if err != nil {
+		return nil, kerrors.NewGRPCBizStatusError(5004002, err.Error())
+	}
+	if placeOrderResp != nil || placeOrderResp.Order != nil {
+		orderId = placeOrderResp.Order.OrderId
+	}
 
 	payReq := &payment.ChargeReq{
 		UserId:  req.UserId,

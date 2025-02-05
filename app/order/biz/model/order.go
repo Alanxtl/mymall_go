@@ -31,7 +31,7 @@ func ListOrder(ctx context.Context, db *gorm.DB, userId uint32) ([]*Order, error
 	var orders []*Order
 	err := db.WithContext(ctx).
 		Where("user_id = ?", userId).
-		Preload("CreditCards").
+		Preload("OrderItems").
 		Find(&orders).
 		Error
 	if err != nil {

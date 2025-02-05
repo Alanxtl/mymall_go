@@ -6,9 +6,11 @@ import (
 	"github.com/Alanxtl/mymall_go/app/frontend/infra/rpc"
 	frontendUtils "github.com/Alanxtl/mymall_go/app/frontend/utils"
 	rpcCheckout "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/checkout"
+	rpcCommon "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/common"
 	rpcPayment "github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/payment"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type CheckoutWaitingService struct {
@@ -31,7 +33,7 @@ func (h *CheckoutWaitingService) Run(req *checkout.CheckoutReq) (resp map[string
 		Firstname: req.Firstname,
 		Lastname:  req.Lastname,
 		Email:     req.Email,
-		Address: &rpcCheckout.Address{
+		Address: &rpcCommon.Address{
 			Street:  req.Street,
 			City:    req.City,
 			Country: req.Country,
@@ -46,6 +48,7 @@ func (h *CheckoutWaitingService) Run(req *checkout.CheckoutReq) (resp map[string
 		},
 	})
 	if err != nil {
+		klog.Error(err)
 		return nil, err
 	}
 

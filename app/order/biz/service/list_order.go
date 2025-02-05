@@ -49,6 +49,7 @@ func (s *ListOrderService) Run(req *order.ListOrderReq) (resp *order.ListOrderRe
 				Street:  v.Consignee.StreetAddress,
 				Zip:     string(v.Consignee.ZipCode),
 			},
+			CreatedAt: int32(v.CreatedAt.Unix()),
 		})
 	}
 

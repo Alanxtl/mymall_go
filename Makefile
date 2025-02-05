@@ -8,6 +8,7 @@ gen-frontend:
 	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/product_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
 	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/cart_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
 	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/checkout_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
+	@cd app/frontend && cwgo server --type HTTP --idl ../../idl/frontend/order_page.proto --service frontend -module ${ROOT_MOD}/app/frontend -I ../../idl
 
 .PHONY: gen-user
 gen-user:
