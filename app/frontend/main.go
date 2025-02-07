@@ -6,6 +6,8 @@ import (
 	"context"
 	"github.com/Alanxtl/mymall_go/app/frontend/infra/rpc"
 	"github.com/Alanxtl/mymall_go/app/frontend/middleware"
+	frontendUtils "github.com/Alanxtl/mymall_go/app/frontend/utils"
+	"github.com/Alanxtl/mymall_go/common/mtl"
 	"github.com/hertz-contrib/sessions"
 	"github.com/hertz-contrib/sessions/redis"
 	"github.com/joho/godotenv"
@@ -26,18 +28,34 @@ import (
 	"github.com/hertz-contrib/gzip"
 	"github.com/hertz-contrib/logger/accesslog"
 	hertzlogrus "github.com/hertz-contrib/logger/logrus"
+	hertzprom "github.com/hertz-contrib/monitor-prometheus"
 	"github.com/hertz-contrib/pprof"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+)
+
+var (
+	ServiceName  = frontendUtils.ServiceName
+	MetricsPort  = conf.GetConf().Hertz.MetricsPort
+	RegistryAddr = conf.GetConf().Hertz.RegistryAddr
 )
 
 func main() {
 	_ = godotenv.Load()
 	// init dal
 	// dal.Init()
+	consul, registryInfo := mtl.InitMetric(ServiceName, MetricsPort, RegistryAddr)
+	defer consul.Deregister(registryInfo)
 	rpc.Init()
 	address := conf.GetConf().Hertz.Address
-	h := server.New(server.WithHostPorts(address))
+
+	h := server.New(server.WithHostPorts(address),
+		server.WithTracer(
+			hertzprom.NewServerTracer("", "",
+				hertzprom.WithDisableServer(true),
+				hertzprom.WithRegistry(mtl.Registry),
+			)),
+	)
 
 	registerMiddleware(h)
 

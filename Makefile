@@ -39,3 +39,8 @@ gen-checkout:
 gen-order:
 	@cd rpc_gen && cwgo client --type RPC --idl ../idl/order.proto --service ${ROOT_MOD}/order --module ${ROOT_MOD}/rpc_gen -I ../idl
 	@cd app/order && cwgo server --type RPC --idl ../../idl/order.proto --service order --module ${ROOT_MOD}/app/order -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"
+
+.PHONY: gen-email
+gen-email:
+	@cd rpc_gen && cwgo client --type RPC --idl ../idl/email.proto --service ${ROOT_MOD}/email --module ${ROOT_MOD}/rpc_gen -I ../idl
+	@cd app/email && cwgo server --type RPC --idl ../../idl/email.proto --service email --module ${ROOT_MOD}/app/email -I ../../idl --pass "-use github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen"

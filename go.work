@@ -3,17 +3,12 @@ go 1.23.4
 use (
 	./app/cart
 	./app/checkout
+	./app/email
 	./app/frontend
 	./app/order
 	./app/payment
 	./app/product
 	./app/user
 	./rpc_gen
+	./common
 )
-
-//
-//replace (
-//  github.com/Alanxtl/mymall_go/app/frontend => ./app/frontend
-//  github.com/Alanxtl/mymall_go/app/user => ./app/user
-//  github.com/Alanxtl/mymall_go/rpc_gen => ./rpc_gen
-//)

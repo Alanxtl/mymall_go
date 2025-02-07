@@ -3,14 +3,18 @@ package service
 import (
 	"context"
 	"github.com/Alanxtl/mymall_go/app/checkout/infra/rpc"
+	"github.com/Alanxtl/mymall_go/app/email/infra/mq"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/cart"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/checkout"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/common"
+	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/email"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/order"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/payment"
 	"github.com/Alanxtl/mymall_go/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/nats-io/nats.go"
+	"google.golang.org/protobuf/proto"
 )
 
 type CheckoutService struct {
@@ -95,6 +99,18 @@ func (s *CheckoutService) Run(req *checkout.CheckoutReq) (resp *checkout.Checkou
 	if err != nil {
 		return nil, err
 	}
+
+	data, _ := proto.Marshal(&email.EmailReq{
+		From:        "from@example.com",
+		To:          req.Email,
+		ContentType: "text/plain",
+		Subject:     "You have just created order in mymall_go",
+		Content:     "You have just created order in mymall_go",
+	})
+
+	msg := &nats.Msg{Subject: "email", Data: data}
+
+	_ = mq.Nc.PublishMsg(msg)
 
 	klog.Info(paymentResp)
 
